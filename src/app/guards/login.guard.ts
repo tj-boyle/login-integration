@@ -1,10 +1,11 @@
+
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivate } from '@angular/router';
 
 import { ApiAuthService } from '../api/auth';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class LoginGuard implements CanActivate {
     constructor(
         private readonly router: Router,
         private readonly authService: ApiAuthService
@@ -14,12 +15,11 @@ export class AuthGuard implements CanActivate {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ) {
-        if (this.authService.isAuthenticated()) {
+        if(!this.authService.isAuthenticated()) {
             return true;
         }
 
-        console.log('not authenticated');
-        this.router.navigate(['/login']);
+        this.router.navigateByUrl('');
         return false;
     }
 }

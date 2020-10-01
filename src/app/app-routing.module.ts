@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { OktaCallbackComponent } from '@okta/okta-angular';
 
 import { LandingComponent } from './landing';
-import { AuthGuard } from './guards';
+import { AuthGuard, LoginGuard } from './guards';
 import { LoginComponent } from './login';
 
 const routes: Routes = [
@@ -14,7 +14,8 @@ const routes: Routes = [
     },
     {
         path: 'login',
-        component: LoginComponent
+        component: LoginComponent,
+        canActivate: [LoginGuard]
     },
     {
         path: '',
@@ -28,7 +29,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    
+
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
 })

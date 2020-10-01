@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { ApiModule } from './api';
 import { LandingComponent } from './landing';
 import { LoginComponent } from './login';
-import { AuthGuard } from './guards';
+import { AuthGuard, LoginGuard } from './guards';
 import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -35,6 +35,7 @@ const config = {
     ],
     providers: [
         AuthGuard,
+        LoginGuard,
         OktaAuthService,
         { provide: OKTA_CONFIG, useValue: config }
     ],
