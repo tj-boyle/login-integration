@@ -42,3 +42,13 @@ const config = {
     bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
+/**
+ * TODO:
+ * - Tests
+ * - Website
+ * - Better landing page
+ * - Better login page
+ * - Refactor auth code to use observables instead of promises
+ */
