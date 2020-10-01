@@ -1,4 +1,16 @@
-<h1>Login page</h1>
+<div class="login-component clr-row">
+    <div class="clr-col-6 clr-offset-3">
+        <h1>Login page</h1>
 
-<button (click)="googleAuthenticate()">Authenticate with Google</button>
-<div id="okta-signin-container"></div>
+        <div [hidden]="oktaOpen">
+            <div><button class="btn btn-primary" (click)="openGoogleAuthenticate()">Authenticate with Google</button></div>
+            <div><button class="btn btn-primary" (click)="openOktaAuthenticateForm()">Authenticate with Okta</button></div>
+        </div>
+
+        <div [hidden]="!oktaOpen">
+            <button class="btn btn-link" (click)="closeOktaAuthenticateForm()">Back</button>
+            <div id="okta-signin-container"></div>
+        </div>
+    </div>
+</div>
+

@@ -1,14 +1,21 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>LoginIntegration</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script async defer src="https://apis.google.com/js/api.js"></script>
+    <meta charset="utf-8">
+    <title>LoginIntegration</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://global.oktacdn.com/okta-signin-widget/4.3.2/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+    <script async defer src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-  <app-root></app-root>
+    <header class="header-6">
+        <div class="header-actions">
+            <a class="nav-link">Login</a>
+            <a class="nav-link">Logout</a>
+        </div>
+    </header>
+    <app-root></app-root>
 </body>
 </html>

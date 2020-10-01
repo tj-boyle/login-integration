@@ -19,6 +19,9 @@ export class LoginComponent implements OnInit {
             pkce: true
         }
     });
+    oktaOpen;
+
+    user;
 
     constructor(oktaAuth: OktaAuthService) {
         this.oktaSignIn = oktaAuth;
@@ -37,12 +40,14 @@ export class LoginComponent implements OnInit {
             {el: '#okta-signin-container'},
             (res) => {
                 if (res.status === 'SUCCESS') {
+                    debugger;
                     this.oktaSignIn.loginRedirect('/', { sessionToken: res.session.token });
                     // Hide the oktaWidget
                     this.oktaWidget.hide();
                 }
             },
             (err) => {
+                debugger;
                 throw err;
             }
         );
@@ -65,14 +70,31 @@ export class LoginComponent implements OnInit {
         });
     }
 
+    openOktaAuthenticateForm() {
+        this.oktaOpen = true;
 
-    async googleAuthenticate(): Promise<gapi.auth2.GoogleUser> {
+    }
+
+    closeOktaAuthenticateForm() {
+        this.oktaOpen = false;
+    }
+
+    async openGoogleAuthenticate(): Promise<gapi.auth2.GoogleUser> {
         if (!this.gapiSetup) {
             await this.initGoogle();
         }
 
+        debugger;
+
         return new Promise(async () => {
-            await this.googleAuthInstance.signIn()
+            await this.googleAuthInstance.signIn().then(
+                user => {
+                    debugger;
+                    this.user = user;
+                },
+                error => console.log(error)
+            );
+
         });
     }
 }

@@ -9,6 +9,8 @@ import { ApiModule } from './api';
 import { LandingComponent } from './landing';
 import { LoginComponent } from './login';
 import { AuthGuard } from './guards';
+import { ClarityModule } from '@clr/angular';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const config = {
     issuer: 'https://dev-570546.okta.com/oauth2/default',
@@ -27,7 +29,9 @@ const config = {
     imports: [
         BrowserModule,
         AppRoutingModule,
-        ApiModule
+        ApiModule,
+        ClarityModule,
+        BrowserAnimationsModule
     ],
     providers: [
         AuthGuard,
