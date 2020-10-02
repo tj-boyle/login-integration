@@ -2,13 +2,13 @@
     <div class="clr-col-6 clr-offset-3">
         <h1>Login page</h1>
 
-        <div [hidden]="oktaOpen">
-            <div><button [disabled]="!this.googleAuthInstance" class="btn btn-primary" (click)="openGoogleAuthenticate()">Authenticate with Google</button></div>
-            <div><button class="btn btn-primary" (click)="openOktaAuthenticateForm()">Authenticate with Okta</button></div>
+        <div class="button-view" [hidden]="oktaOpen">
+            <div><button [disabled]="!this.googleAuthInstance" class="btn btn-primary google-btn" (click)="openGoogleAuthenticate()">Authenticate with Google</button></div>
+            <div><button class="btn btn-primary okta-btn" (click)="toggleOktaAuthenticateForm(true)">Authenticate with Okta</button></div>
         </div>
 
-        <div [hidden]="!oktaOpen">
-            <button class="btn btn-link" (click)="closeOktaAuthenticateForm()">Back</button>
+        <div class="okta-view" [hidden]="!oktaOpen">
+            <button class="btn btn-link" (click)="toggleOktaAuthenticateForm(false)">Back</button>
             <div id="okta-signin-container"></div>
         </div>
     </div>

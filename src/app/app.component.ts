@@ -26,7 +26,7 @@ export class AppComponent implements OnDestroy {
     async logout() {
         try {
             await this.authService.logout();
-            this.router.navigateByUrl('/login');
+            this.router.navigate(['/login']);
         } catch (e) {
             console.log('error logging out');
         }
@@ -36,3 +36,10 @@ export class AppComponent implements OnDestroy {
         this.userSubscription.unsubscribe();
     }
 }
+
+/**
+ * TODO:
+ * - Comments
+ * - Website
+ * - Cleanup
+ */

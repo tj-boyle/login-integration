@@ -15,7 +15,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     googleAuthInstance;
     googleSubscription: Subscription;
 
-    oktaWidget: OktaSignIn;
+    oktaWidget: OktaSignIn = new OktaSignIn({
+        baseUrl: 'https://dev-570546.okta.com/',
+        authParams: {
+            pkce: true
+        }
+    });
     oktaOpen: boolean = false;
 
 
@@ -34,33 +39,31 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     initOkta() {
-        this.oktaWidget = new OktaSignIn({
-            baseUrl: 'https://dev-570546.okta.com/',
-            authParams: {
-                pkce: true
-            }
-        });
-
         this.oktaWidget.renderEl(
             {el: '#okta-signin-container'},
             (res) => {
-                if (res.status === 'SUCCESS') {
-                    this.authService.setUser({
-                        name: res.user && res.user.profile ? `${res.user.profile.firstName} ${res.user.profile.lastName}` : undefined,
-                        imageUrl: undefined,
-                        token: res.session ? res.session.token : undefined,
-                        type: UserType.OKTA
-                    })
-                    this.oktaWidget.hide();
-                    this.ngZone.run(() => {
-                        this.router.navigateByUrl('');
-                    });
-                }
+                this.oktaResHandler(res);
             },
             (err) => {
+                console.log('in err');
                 throw err;
             }
         );
+    }
+
+    oktaResHandler(res: any) {
+        if (res && res.status === 'SUCCESS') {
+            this.authService.setUser({
+                name: res.user && res.user.profile ? `${res.user.profile.firstName} ${res.user.profile.lastName}` : undefined,
+                imageUrl: undefined,
+                token: res.session ? res.session.token : undefined,
+                type: UserType.OKTA
+            })
+            this.oktaWidget.hide();
+            this.ngZone.run(() => {
+                this.router.navigate(['']);
+            });
+        }
     }
 
     async initGoogle(): Promise<any> {
@@ -80,30 +83,31 @@ export class LoginComponent implements OnInit, OnDestroy {
     openGoogleAuthenticate(): Promise<gapi.auth2.GoogleUser> {
         return new Promise(async () => {
             this.googleSubscription = from(this.googleAuthInstance.signIn()).subscribe((user: gapi.auth2.GoogleUser) => {
-                this.authService.setUser({
-                    name: user.getBasicProfile().getName(),
-                    imageUrl: user.getBasicProfile().getImageUrl(),
-                    token: user.getAuthResponse().id_token,
-                    type: UserType.GOOGLE
-                });
-                this.ngZone.run(() => {
-                    this.router.navigateByUrl('');
-                });
+                this.googleResHandler(user);
             });
         });
     }
 
-    openOktaAuthenticateForm() {
-        this.oktaOpen = true;
+    googleResHandler(user: gapi.auth2.GoogleUser) {
+        if (user) {
+            this.authService.setUser({
+                name: user.getBasicProfile().getName(),
+                imageUrl: user.getBasicProfile().getImageUrl(),
+                token: user.getAuthResponse().id_token,
+                type: UserType.GOOGLE
+            });
+            this.ngZone.run(() => {
+                this.router.navigate(['']);
+            });
+        }
     }
 
-    closeOktaAuthenticateForm() {
-        this.oktaOpen = false;
+    toggleOktaAuthenticateForm(open: boolean) {
+        this.oktaOpen = open;
     }
 
     ngOnDestroy() {
-        console.log('DESTROYED');
-        if(this.oktaWidget){
+        if (this.oktaWidget){
             this.oktaWidget.remove();
         }
 
