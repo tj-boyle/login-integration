@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { OktaAuthService } from '@okta/okta-angular';
 import * as OktaSignIn from '@okta/okta-signin-widget';
 import { from, Subscription } from 'rxjs';
 
 import { ApiAuthService, UserType } from '../api/auth';
+import { environment } from './../../environments/environment';
 
 @Component({
     selector: 'li-login',
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     googleSubscription: Subscription;
 
     oktaWidget: OktaSignIn = new OktaSignIn({
-        baseUrl: 'https://dev-570546.okta.com/',
+        baseUrl: environment.oktaUrl,
         authParams: {
             pkce: true
         }
@@ -30,15 +30,18 @@ export class LoginComponent implements OnInit, OnDestroy {
         private readonly ngZone: NgZone
     ) {}
 
-    ngOnInit() {
-        // init okta
-        this.initOkta();
-
-        // init google
-        this.initGoogle();
+    /**
+     * Inits okta and google
+     */
+    async ngOnInit() {
+        this.renderOktaWidget();
+        this.googleAuthInstance = await this.authService.initGoogle();
     }
 
-    initOkta() {
+    /**
+     * Renders okta widget (hidden by default) and sets up call to response handler and error handler
+     */
+    renderOktaWidget() {
         this.oktaWidget.renderEl(
             {el: '#okta-signin-container'},
             (res) => {
@@ -51,6 +54,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * If okta response successful, calls auth service to set user,
+     * hides widget, and redirects to landing page
+     * @param res response from okta login widget
+     */
     oktaResHandler(res: any) {
         if (res && res.status === 'SUCCESS') {
             this.authService.setUser({
@@ -66,20 +74,24 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    async initGoogle(): Promise<any> {
-        const pload = new Promise((resolve) => {
-            gapi.load('auth2', resolve);
-        });
+    /**
+     * Initializes google login. Once first promise resolves we can go ahead and initialize google auth
+     */
+    // async initGoogle(): Promise<any> {
+    //     const pload = new Promise((resolve) => {
+    //         gapi.load('auth2', resolve);
+    //     });
 
-        // When the first promise resolves, it means we have gapi
-        // loaded and that we can call gapi.init
-        return pload.then(async () => {
-            await gapi.auth2
-                .init({ client_id: '395482602866-98pislb40f2bunm6mkdp2tgho8e566t5.apps.googleusercontent.com' })
-                .then(auth => this.googleAuthInstance = auth);
-        });
-    }
+    //     return pload.then(async () => {
+    //         await gapi.auth2
+    //             .init({ client_id: environment.googleClientId })
+    //             .then(auth => this.googleAuthInstance = auth);
+    //     });
+    // }
 
+    /**
+     * Called when Google login button clicked, opens up modal and sets up response handler
+     */
     openGoogleAuthenticate(): Promise<gapi.auth2.GoogleUser> {
         return new Promise(async () => {
             this.googleSubscription = from(this.googleAuthInstance.signIn()).subscribe((user: gapi.auth2.GoogleUser) => {
@@ -88,6 +100,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * If google response successful, calls auth service to set user
+     * and redirects to landing page
+     * @param user gapi.auth2.GoogleUser
+     */
     googleResHandler(user: gapi.auth2.GoogleUser) {
         if (user) {
             this.authService.setUser({
@@ -102,6 +119,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Toggles hide show the okta widget
+     * @param open
+     */
     toggleOktaAuthenticateForm(open: boolean) {
         this.oktaOpen = open;
     }

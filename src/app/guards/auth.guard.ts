@@ -10,6 +10,12 @@ export class AuthGuard implements CanActivate {
         private readonly authService: ApiAuthService
     ) {}
 
+    /**
+     * Checks authenticated against service
+     * If unauthenticated, regects and navigates to login
+     * @param route
+     * @param state
+     */
     async canActivate(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot

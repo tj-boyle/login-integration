@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { OktaAuthService, OKTA_CONFIG, OktaCallbackComponent } from '@okta/okta-angular';
+import { ClarityModule } from '@clr/angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,13 +11,12 @@ import { ApiModule } from './api';
 import { LandingComponent } from './landing';
 import { LoginComponent } from './login';
 import { AuthGuard, LoginGuard } from './guards';
-import { ClarityModule } from '@clr/angular';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { environment } from './../environments/environment';
 
 const config = {
-    issuer: 'https://dev-570546.okta.com/oauth2/default',
-    redirectUri: 'http://localhost:4200/login/callback',
-    clientId: '0oa12ljvekBSBhfHI4x7',
+    issuer: `${environment.oktaUrl}/oauth2/default`,
+    redirectUri: environment.oktaRedirectUri,
+    clientId: environment.oktaClientId,
     pkce: true
 }
 

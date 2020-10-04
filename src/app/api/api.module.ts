@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 
 import { ApiAuthService } from './auth';
+import { OktaAuthService } from '@okta/okta-angular';
 
 
 @NgModule({

@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ApiAuthService, User } from './api/auth';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -23,6 +23,9 @@ export class AppComponent implements OnDestroy {
         });
     }
 
+    /**
+     * Calls auth service logout and navigates to login when logout button clicked
+     */
     async logout() {
         try {
             await this.authService.logout();

@@ -16,6 +16,7 @@ class MockApiAuthService {
     isAuthenticated = () => true;
     setUser = (user: User) =>  this.user = user;
     getUser = (): User => this.user;
+    initGoogle = () => true;
 }
 
 describe('LoginComponent', () => {
@@ -115,8 +116,8 @@ describe('LoginComponent', () => {
 
     describe('onInit, onDestroy', () => {
         beforeEach(() => {
-            spyOn(component, 'initOkta').and.callFake(() => undefined);
-            spyOn(component, 'initGoogle').and.callFake(() => undefined);
+            spyOn(component, 'renderOktaWidget').and.callFake(() => undefined);
+            spyOn(mockAuthService, 'initGoogle').and.callFake(() => undefined);
             component.googleSubscription = new Subscription();
         })
 
@@ -124,8 +125,8 @@ describe('LoginComponent', () => {
             component.oktaWidget = undefined;
             component.ngOnInit();
 
-            expect(component.initOkta).toHaveBeenCalled();
-            expect(component.initGoogle).toHaveBeenCalled();
+            expect(component.renderOktaWidget).toHaveBeenCalled();
+            expect(mockAuthService.initGoogle).toHaveBeenCalled();
         });
 
         it('should destroy on destroy', () => {

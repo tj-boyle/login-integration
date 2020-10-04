@@ -11,6 +11,12 @@ export class LoginGuard implements CanActivate {
         private readonly authService: ApiAuthService
     ) {}
 
+    /**
+     * Checks authenticated against service
+     * If authenticated, rejects and navigates to landing page
+     * @param route
+     * @param state
+     */
     async canActivate(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot

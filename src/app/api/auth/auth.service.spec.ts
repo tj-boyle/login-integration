@@ -55,8 +55,11 @@ describe('ApiAuthService', () => {
     beforeEach(() => {
         (window as any).gapi = {
             auth2: {
-                getAuthInstance: () => ({signOut: () => true}) as any
-            }
+                getAuthInstance: () => ({signOut: () => true}) as any,
+                init: () => Promise.resolve({})
+            },
+            load: (text, obj) => true
+
         } as any;
 
 
@@ -72,6 +75,30 @@ describe('ApiAuthService', () => {
         mockOkta = TestBed.get(OktaAuthService);
     });
 
+    describe('getFromLocalStorage', () => {
+        it('should init from local storage if availabile', () => {
+            const userString = '{"name":"Thomas Boyle","token":"20111vKzYW4nsxAJdnBg4RQPMmFmfJeVZiebYiqBssG9O8RE7STtu8r","type":1}'
+            spyOn(localStorage, 'getItem').and.callFake(() => userString);
+            spyOn(auth, 'setUser').and.callFake(() => true);
+            spyOn(auth, 'initGoogle').and.callFake(() => Promise.resolve(true));
+
+            auth.getFromLocalStorage();
+            expect(auth.setUser).toHaveBeenCalledWith(JSON.parse(userString));
+            expect(auth.initGoogle).toHaveBeenCalled();
+
+        });
+
+        it('should do nothing if no local storage value available', () => {
+            spyOn(localStorage, 'getItem').and.callFake(() => undefined);
+            spyOn(auth, 'setUser').and.callFake(() => true);
+            spyOn(auth, 'initGoogle').and.callFake(() => Promise.resolve(true));
+
+            auth.getFromLocalStorage();
+            expect(auth.setUser).not.toHaveBeenCalled();
+            expect(auth.initGoogle).not.toHaveBeenCalled();
+        });
+    });
+    
     describe('set authenticated', () => {
         it('should set authenticated to passed in value', () => {
             auth.setAuthenticated(true);
